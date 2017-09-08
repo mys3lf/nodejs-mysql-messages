@@ -1,13 +1,7 @@
 var express = require('express'), mysql = require('mysql'), bodyParser = require('body-parser');
 var app = express();
 
-var pool = mysql.createPool({
-    connectionLimit: 10,
-    host: 'localhost',
-    user: 'root',
-    password: 'dummy',
-    database: 'messages'
-});
+var pool = mysql.createPool(require('./config.json'));
 
 var server = app
 
@@ -24,6 +18,8 @@ var server = app
 
 
 app.get('/messages', function (req, res) {
+
+
     pool.query('SELECT id, type, host, title, timestamp, content from Messages', function (error, results, fields) {
         if (error) throw error;
 
