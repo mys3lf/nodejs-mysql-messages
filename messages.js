@@ -18,9 +18,7 @@ var server = app
 
 
 app.get('/messages', function (req, res) {
-
-
-    pool.query('SELECT id, type, host, title, timestamp, content from Messages', function (error, results, fields) {
+    function returnData(error, results, fields) {
         if (error) throw error;
 
         var array = [];
@@ -39,7 +37,9 @@ app.get('/messages', function (req, res) {
         }
 
         res.json(array);
-    });
+    }
+
+    pool.query('SELECT id, type, host, title, timestamp, content from Messages' + (req.query.type != null ? " where type=?" : "") , [req.query.type], returnData);
 }).get("/messages/:messageId", function (req, res) {
     pool.query('SELECT id, type, host, title, timestamp, content from Messages where id= ?', [req.params.messageId], function (error, results, fields) {
         if (error) throw error;
